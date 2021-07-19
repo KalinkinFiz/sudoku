@@ -1,19 +1,14 @@
 module.exports = function solveSudoku(matrix) {
-  const valid = (matrix, row, col, value) => {
-    for (let i = 0; i < 9; i++) {
-      if (matrix[row][i] === value || matrix[i][col] === value) {
-        return false;
-      }
-    }
-    return true;
-  };
-
   const checkBox = (matrix, row, col, value) => {
     for (let i = 0; i < 9; i++) {
       const boxRow = 3 * Math.floor(row / 3) + Math.floor(i / 3);
       const boxCol = 3 * Math.floor(col / 3) + (i % 3);
 
-      if (matrix[boxRow][boxCol] === value) {
+      if (
+        matrix[row][i] === value ||
+        matrix[i][col] === value ||
+        matrix[boxRow][boxCol] === value
+      ) {
         return false;
       }
     }
@@ -25,11 +20,9 @@ module.exports = function solveSudoku(matrix) {
       for (let j = 0; j < 9; j++) {
         if (matrix[i][j] === 0) {
           for (let value = 1; value <= 9; value++) {
-            if (valid(matrix, i, j, value)) {
-              if (checkBox(matrix, i, j, value)) {
-                matrix[i][j] = value;
-                if (findNull()) return matrix;
-              }
+            if (checkBox(matrix, i, j, value)) {
+              matrix[i][j] = value;
+              if (findNull()) return matrix;
             }
           }
           matrix[i][j] = 0;
